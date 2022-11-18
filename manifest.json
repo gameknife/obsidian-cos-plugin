@@ -3,7 +3,7 @@
 	"name": "Obsidian COS Plugin",
 	"version": "1.0.0",
 	"minAppVersion": "0.13.19",
-	"description": "This plugin uploads images from your clipboard to imgur.com and embeds uploaded image to your note",
+	"description": "This plugin uploads images from your clipboard to tencent cos and embeds uploaded image to your note",
 	"author": "gameKnife",
 	"authorUrl": "",
 	"isDesktopOnly": false

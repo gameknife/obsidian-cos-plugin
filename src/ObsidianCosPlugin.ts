@@ -4,15 +4,13 @@ import { Editor, MarkdownView, Notice, Plugin } from "obsidian";
 import * as path from "path";
 import ImageUploader from "./uploader/ImageUploader";
 // eslint-disable-next-line import/no-cycle
-import ImgurPluginSettingsTab from "./ui/ImgurPluginSettingsTab";
+import PluginSettingsTab from "./ui/PluginSettingsTab";
 import ApiError from "./uploader/ApiError";
 import UploadStrategy from "./UploadStrategy";
 import buildUploaderFrom from "./uploader/imgUploaderFactory";
 import RemoteUploadConfirmationDialog from "./ui/RemoteUploadConfirmationDialog";
 import PasteEventCopy from "./aux-event-classes/PasteEventCopy";
 import DragEventCopy from "./aux-event-classes/DragEventCopy";
-import editorCheckCallbackFor from "./imgur/resizing/plugin-callback";
-import ImgurSize from "./imgur/resizing/ImgurSize";
 
 declare module "obsidian" {
   interface MarkdownSubView {
@@ -25,7 +23,7 @@ interface ClipboardManager {
   handleDrop(e: DragEvent): void;
 }
 
-export interface ImgurPluginSettings {
+export interface PluginSettings {
   uploadStrategy: string;
   Bucket: string;
   Region: string;
@@ -35,7 +33,7 @@ export interface ImgurPluginSettings {
   renameByTimestamp: boolean;
 }
 
-const DEFAULT_SETTINGS: ImgurPluginSettings = {
+const DEFAULT_SETTINGS: PluginSettings = {
   uploadStrategy: UploadStrategy.TENCENT_COS.id,
   Bucket: null,
   Region: null,
@@ -56,7 +54,7 @@ function allFilesAreImages(files: FileList) {
 }
 
 export default class ObsidianCosPlugin extends Plugin {
-  settings: ImgurPluginSettings;
+  settings: PluginSettings;
 
   private imgUploaderField: ImageUploader;
 
@@ -199,7 +197,7 @@ export default class ObsidianCosPlugin extends Plugin {
   private async loadSettings() {
     this.settings = {
       ...DEFAULT_SETTINGS,
-      ...((await this.loadData()) as ImgurPluginSettings),
+      ...((await this.loadData()) as PluginSettings),
     };
   }
 
@@ -208,19 +206,8 @@ export default class ObsidianCosPlugin extends Plugin {
   }
 
   async onload(): Promise<void> {
-    const sizes = ImgurSize.values();
-    for (let i = 0; i < sizes.length; i += 1) {
-      const size = sizes[i];
-      this.addCommand({
-        id: `imgur-resize-${size.suffix}-command`,
-        name: `Resize to ${size.description}${
-          size.sizeHint ? ` (${size.sizeHint})` : ""
-        }`,
-        editorCheckCallback: editorCheckCallbackFor(size),
-      });
-    }
     await this.loadSettings();
-    this.addSettingTab(new ImgurPluginSettingsTab(this.app, this));
+    this.addSettingTab(new PluginSettingsTab(this.app, this));
     this.setupImgurHandlers();
     this.setupImagesUploader();
   }
@@ -242,7 +229,7 @@ export default class ObsidianCosPlugin extends Plugin {
     const fiveSecondsMillis = 5_000;
     // eslint-disable-next-line no-new
     new Notice(
-      "⚠️ Please configure Imgur plugin or disable it",
+      "⚠️ Please configure plugin or disable it",
       fiveSecondsMillis
     );
   }
@@ -266,10 +253,10 @@ export default class ObsidianCosPlugin extends Plugin {
         );
       } else {
         // eslint-disable-next-line no-console
-        console.error("Failed imgur request: ", e);
+        console.error("Failed request: ", e);
         this.handleFailedUpload(
           pasteId,
-          "⚠️Imgur upload failed, check dev console"
+          "⚠️Image upload failed, check dev console"
         );
       }
       throw e;

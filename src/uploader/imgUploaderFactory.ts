@@ -1,4 +1,4 @@
-import { ImgurPluginSettings } from "src/ImgurPlugin";
+import { PluginSettings } from "src/ObsidianCosPlugin";
 import UploadStrategy from "src/UploadStrategy";
 import TencentCOSUploader from "./cos/TencentCOSUploader";
 import ImageUploader from "./ImageUploader";
@@ -8,7 +8,7 @@ function defaultAnonymousUploader(): ImageUploader {
 }
 
 export default function buildUploaderFrom(
-  settings: ImgurPluginSettings
+  settings: PluginSettings
 ): ImageUploader | undefined {
   if (settings.uploadStrategy === UploadStrategy.TENCENT_COS.id) {
     console.info("start uploader...");

@@ -15,7 +15,7 @@ esbuild.build({
 	banner: {
 		js: banner,
 	},
-	entryPoints: ['src/ImgurPlugin.ts'],
+	entryPoints: ['src/ObsidianCosPlugin.ts'],
 	bundle: true,
 	external: [
 		'obsidian',

@@ -14,9 +14,9 @@ export default class RemoteUploadConfirmationDialog extends Modal {
   }
 
   onOpen(): void {
-    this.titleEl.setText("Imgur plugin");
+    this.titleEl.setText("Obsidian COS Plugin");
     this.contentEl.setText(
-      "Would you like to upload to Imgur or paste your content locally?"
+      "Would you like to upload to TencentCOS or paste your content locally?"
     );
 
     const buttonsDiv = this.modalEl.createDiv("modal-button-container");

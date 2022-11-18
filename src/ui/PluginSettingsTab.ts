@@ -1,11 +1,11 @@
 import { App, Notice, PluginSettingTab, Setting } from "obsidian";
 // eslint-disable-next-line import/no-cycle
-import ObsidianCosPlugin from "../ImgurPlugin";
+import ObsidianCosPlugin from "../ObsidianCosPlugin";
 import UploadStrategy from "../UploadStrategy";
 
 const COS_SECRET_URL = "https://console.cloud.tencent.com/capi";
 
-export default class ImgurPluginSettingsTab extends PluginSettingTab {
+export default class PluginSettingsTab extends PluginSettingTab {
   plugin: ObsidianCosPlugin;
 
   strategyDiv?: HTMLDivElement;
