@@ -54,16 +54,9 @@ export default class TencentCOSUploader implements ImageUploader {
       }
     );
 
-    if (!resultUrl) {
+    for (let i = 0; i < 50; ++i) {
+      if (resultUrl) break;
       await setTimeout(100);
-    }
-
-    if (!resultUrl) {
-      await setTimeout(1000);
-    }
-
-    if (!resultUrl) {
-      await setTimeout(5000);
     }
 
     return resultUrl;
