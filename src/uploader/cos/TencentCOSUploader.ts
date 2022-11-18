@@ -1,9 +1,6 @@
-import { IMGUR_API_BASE } from "src/imgur/constants";
 import COS from "cos-nodejs-sdk-v5";
 import { setTimeout } from "timers/promises";
-import { ImgurPostData } from "../../imgur/imgurResponseTypes";
 import ImageUploader from "../ImageUploader";
-import { handleImgurErrorResponse } from "../../imgur/ImgurClient";
 
 export default class TencentCOSUploader implements ImageUploader {
   private readonly SecretId!: string;

@@ -1,48 +1,18 @@
 import { App, Notice, PluginSettingTab, Setting } from "obsidian";
 // eslint-disable-next-line import/no-cycle
-import { IMGUR_ACCESS_TOKEN_LOCALSTORAGE_KEY } from "src/imgur/constants";
-// eslint-disable-next-line import/no-cycle
 import ObsidianCosPlugin from "../ImgurPlugin";
 import UploadStrategy from "../UploadStrategy";
-import ImgurAuthModal from "./ImgurAuthModal";
 
 const COS_SECRET_URL = "https://console.cloud.tencent.com/capi";
 
 export default class ImgurPluginSettingsTab extends PluginSettingTab {
   plugin: ObsidianCosPlugin;
 
-  authModal?: ImgurAuthModal;
-
   strategyDiv?: HTMLDivElement;
 
   constructor(app: App, plugin: ObsidianCosPlugin) {
     super(app, plugin);
     this.plugin = plugin;
-
-    this.plugin.registerObsidianProtocolHandler("imgur-oauth", (params) => {
-      if (!this.authModal || !this.authModal.isOpen) return;
-
-      if (params.error) {
-        // eslint-disable-next-line no-new
-        new Notice(`Authentication failed with error: ${params.error}`);
-        return;
-      }
-
-      const mappedData = params.hash.split("&").map((p) => {
-        const sp = p.split("=");
-        return [sp[0], sp[1]] as [string, string];
-      });
-      const map = new Map<string, string>(mappedData);
-      localStorage.setItem(
-        IMGUR_ACCESS_TOKEN_LOCALSTORAGE_KEY,
-        map.get("access_token")
-      );
-
-      this.plugin.setupImagesUploader();
-
-      this.authModal.close();
-      this.authModal = null;
-    });
   }
 
   display(): void {

@@ -24,6 +24,8 @@ module.exports = {
       ],
       rules: {
         "@typescript-eslint/no-explicit-any": "off",
+        "no-await-in-loop": "off",
+        "no-plusplus": "off",
         "import/no-extraneous-dependencies": airbnbNoExtraDepsRule,
       },
     },
