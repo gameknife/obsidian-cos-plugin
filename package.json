@@ -1,7 +1,7 @@
 {
-  "name": "obsidian-imgur-plugin",
-  "version": "2.2.1",
-  "description": "This plugin uploads images from your clipboard to imgur.com and embeds uploaded image to your note",
+  "name": "obsidian-cos-plugin",
+  "version": "1.0.0",
+  "description": "This plugin uploads images from your clipboard to tencent cos and embeds uploaded image to your note",
   "main": "main.js",
   "scripts": {
     "dev": "node esbuild.config.mjs",
@@ -17,10 +17,13 @@
   },
   "keywords": [
     "obsidian.md",
-    "imgur.com"
+    "tencent cos"
   ],
-  "author": "Kirill Gavrilov",
+  "author": "gameKnife",
   "license": "MIT",
+  "dependencies": {
+    "cos-nodejs-sdk-v5": "^2.11.15"
+  },
   "devDependencies": {
     "@commitlint/cli": "^17.0.3",
     "@commitlint/config-conventional": "^17.0.3",

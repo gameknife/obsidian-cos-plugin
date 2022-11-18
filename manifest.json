@@ -1,10 +1,10 @@
 {
-	"id": "obsidian-imgur-plugin",
-	"name": "Imgur Plugin",
-	"version": "2.2.1",
+	"id": "obsidian-cos-plugin",
+	"name": "Obsidian COS Plugin",
+	"version": "1.0.0",
 	"minAppVersion": "0.13.19",
 	"description": "This plugin uploads images from your clipboard to imgur.com and embeds uploaded image to your note",
-	"author": "Kirill Gavrilov",
-	"authorUrl": "https://github.com/gavvvr",
-	"isDesktopOnly": true
+	"author": "gameKnife",
+	"authorUrl": "",
+	"isDesktopOnly": false
 }

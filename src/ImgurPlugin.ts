@@ -1,6 +1,7 @@
 /* eslint-disable no-param-reassign */
 /* eslint-disable no-underscore-dangle */
 import { Editor, MarkdownView, Notice, Plugin } from "obsidian";
+import * as path from "path";
 import ImageUploader from "./uploader/ImageUploader";
 // eslint-disable-next-line import/no-cycle
 import ImgurPluginSettingsTab from "./ui/ImgurPluginSettingsTab";
@@ -26,14 +27,22 @@ interface ClipboardManager {
 
 export interface ImgurPluginSettings {
   uploadStrategy: string;
-  clientId: string;
+  Bucket: string;
+  Region: string;
+  SecretId: string;
+  SecretKey: string;
   showRemoteUploadConfirmation: boolean;
+  renameByTimestamp: boolean;
 }
 
 const DEFAULT_SETTINGS: ImgurPluginSettings = {
-  uploadStrategy: UploadStrategy.ANONYMOUS_IMGUR.id,
-  clientId: null,
+  uploadStrategy: UploadStrategy.TENCENT_COS.id,
+  Bucket: null,
+  Region: null,
+  SecretId: null,
+  SecretKey: null,
   showRemoteUploadConfirmation: true,
+  renameByTimestamp: true,
 };
 
 function allFilesAreImages(files: FileList) {
@@ -46,7 +55,7 @@ function allFilesAreImages(files: FileList) {
   return true;
 }
 
-export default class ImgurPlugin extends Plugin {
+export default class ObsidianCosPlugin extends Plugin {
   settings: ImgurPluginSettings;
 
   private imgUploaderField: ImageUploader;
@@ -57,9 +66,8 @@ export default class ImgurPlugin extends Plugin {
     markdownView: MarkdownView
   ) => {
     if (e instanceof PasteEventCopy) return;
-
     if (!this.imgUploader) {
-      ImgurPlugin.showUnconfiguredPluginNotice();
+      ObsidianCosPlugin.showUnconfiguredPluginNotice();
       return;
     }
 
@@ -112,7 +120,7 @@ export default class ImgurPlugin extends Plugin {
     if (e instanceof DragEventCopy) return;
 
     if (!this.imgUploader) {
-      ImgurPlugin.showUnconfiguredPluginNotice();
+      ObsidianCosPlugin.showUnconfiguredPluginNotice();
       return;
     }
 
@@ -245,7 +253,11 @@ export default class ImgurPlugin extends Plugin {
 
     let imgUrl: string;
     try {
-      imgUrl = await this.imgUploaderField.upload(file);
+      const timestampname = `${Date.now()}${path.extname(file.name)}`;
+      const filename = this.settings.renameByTimestamp
+        ? timestampname
+        : file.name;
+      imgUrl = await this.imgUploaderField.upload(file, filename);
     } catch (e) {
       if (e instanceof ApiError) {
         this.handleFailedUpload(
@@ -266,7 +278,7 @@ export default class ImgurPlugin extends Plugin {
   }
 
   private insertTemporaryText(pasteId: string) {
-    const progressText = ImgurPlugin.progressTextFor(pasteId);
+    const progressText = ObsidianCosPlugin.progressTextFor(pasteId);
     this.getEditor().replaceSelection(`${progressText}\n`);
   }
 
@@ -275,10 +287,10 @@ export default class ImgurPlugin extends Plugin {
   }
 
   private embedMarkDownImage(pasteId: string, imageUrl: string) {
-    const progressText = ImgurPlugin.progressTextFor(pasteId);
+    const progressText = ObsidianCosPlugin.progressTextFor(pasteId);
     const markDownImage = `![](${imageUrl})`;
 
-    ImgurPlugin.replaceFirstOccurrence(
+    ObsidianCosPlugin.replaceFirstOccurrence(
       this.getEditor(),
       progressText,
       markDownImage
@@ -286,8 +298,8 @@ export default class ImgurPlugin extends Plugin {
   }
 
   private handleFailedUpload(pasteId: string, message: string) {
-    const progressText = ImgurPlugin.progressTextFor(pasteId);
-    ImgurPlugin.replaceFirstOccurrence(
+    const progressText = ObsidianCosPlugin.progressTextFor(pasteId);
+    ObsidianCosPlugin.replaceFirstOccurrence(
       this.getEditor(),
       progressText,
       `<!--${message}-->`

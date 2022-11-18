@@ -16,3 +16,5 @@ main.js
 coverage/
 
 test-results.xml
+
+data.json
